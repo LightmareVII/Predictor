@@ -12,6 +12,9 @@ class connectReddit(object):
                                   client_secret = self.CLIENT_SECRET,
                                   user_agent = self.USER_AGENT)
         
+    def getReplies(self, Comment):
+        pass #will need to step through and make nested dictionary of all comment replies
+    
     def getComments(self, POST):
         self.RETURN_COMMENTS = {}
         
