@@ -2,6 +2,7 @@
 wrappers to make connections to various APIs
 """
 import praw
+from praw.models import MoreComments
 
 class connectReddit(object):
     def __init__(self):
@@ -19,12 +20,18 @@ class connectReddit(object):
         self.RETURN_COMMENTS = {}
         
         self.SUBMISSION = self.REDDIT.submission(id = POST)
-        for COMMENT in self.SUBMISSION.comments:
-            self.RETURN_COMMENTS[COMMENT.id] = {'id' : COMMENT.id,
-                                                'body' : COMMENT.body,
-                                                'author' : COMMENT.author,
-                                                'votes' : COMMENT.ups - COMMENT.downs,
-                                                'created' : COMMENT.created_utc}
+        for COMMENT in self.SUBMISSION.comments.list():
+            if isinstance(COMMENT, MoreComments):
+                continue
+            else:
+                self.RETURN_COMMENTS[COMMENT.id] = {'id' : COMMENT.id,
+                                                    'body' : COMMENT.body,
+                                                    'author' : COMMENT.author,
+                                                    'votes' : COMMENT.ups - COMMENT.downs,
+                                                    'created' : COMMENT.created_utc,
+                                                    'parent': COMMENT.parent_id.split('_')[-1]}
+            #print(COMMENT.id)
+            self.comments = COMMENT
         return(self.RETURN_COMMENTS)
         
     def getSub(self, SUBREDDIT, POST_LIMIT):
@@ -45,6 +52,7 @@ class connectReddit(object):
                                    'comments' : self.getComments(POST)}
             
         #(self.responseList.append(x) for x in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT))
+            self.post = POST
         return(self.RESPONSE)
         
     def getUser(self, USER):
