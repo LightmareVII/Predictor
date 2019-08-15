@@ -1,10 +1,11 @@
 """
 wrappers to make connections to various APIs
 """
+#add initial database check
 import praw
 from praw.models import MoreComments
 
-class connectReddit(object):
+class connectReddit():
     def __init__(self):
         self.CLIENT_ID = '_x2PTISsyViP3g'
         self.CLIENT_SECRET = 'syZ1LiodSb9RGXSGmZ7djaL8Apk'
@@ -12,10 +13,6 @@ class connectReddit(object):
         self.REDDIT = praw.Reddit(client_id = self.CLIENT_ID,
                                   client_secret = self.CLIENT_SECRET,
                                   user_agent = self.USER_AGENT)
-        
-    def getReplies(self, Comment):
-        pass #will need to step through and make nested dictionary of all comment replies
-    
     def getComments(self, POST):
         self.RETURN_COMMENTS = {}
         
@@ -30,8 +27,6 @@ class connectReddit(object):
                                                     'votes' : COMMENT.ups - COMMENT.downs,
                                                     'created' : COMMENT.created_utc,
                                                     'parent': COMMENT.parent_id.split('_')[-1]}
-            #print(COMMENT.id)
-            self.comments = COMMENT
         return(self.RETURN_COMMENTS)
         
     def getSub(self, SUBREDDIT, POST_LIMIT):
@@ -39,29 +34,29 @@ class connectReddit(object):
         
         for POST in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT):
             self.RESPONSE[POST.id] = {'id': POST.id,
-                                   'title' : POST.title,
-                                   'selftext': POST.selftext,
-                                   'subreddit': POST.subreddit_name_prefixed,
-                                   'created' : POST.created_utc,
-                                   'is_video' : POST.is_video,
-                                   'url' : POST.url,
-                                   'authorID': POST.author_fullname,
-                                   'author': POST.author,
-                                   'votes': POST.ups - POST.downs,
-                                   'num_comments': POST.num_comments,
-                                   'comments' : self.getComments(POST)}
+                                      'title' : POST.title,
+                                      'selftext': POST.selftext,
+                                      'subreddit': POST.subreddit_name_prefixed,
+                                      'created' : POST.created_utc,
+                                      'is_video' : POST.is_video,
+                                      'url' : POST.url,
+                                      'authorID': POST.author_fullname,
+                                      'author': POST.author,
+                                      'votes': POST.ups - POST.downs,
+                                      'vote_ratio' : POST.upvote_ratio,
+                                      'num_comments': POST.num_comments,
+                                      'media' : POST.media,
+                                      'stickied' : POST.stickied,
+                                      'subscribers' : POST.subreddit_subscribers,
+                                      'num_crossposts' : POST.num_crossposts,
+                                      'pinned' : POST.pinned,
+                                      'awards' : POST.total_awards_received,
+                                      'score' : POST.score,
+                                      'comments' : self.getComments(POST)}
             
         #(self.responseList.append(x) for x in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT))
             self.post = POST
         return(self.RESPONSE)
-        
-    def getUser(self, USER):
-        if isinstance(USER, str):
-            pass
-        elif isinstance(USER, list):
-            pass
-        
-
 
 class connectTwitter(object):
     def __init__():
