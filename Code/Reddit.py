@@ -4,6 +4,17 @@ Created on Wed Aug 14 21:50:28 2019
 
 @author: Lightmare
 """
+"""
+SQL query to pull all submissions and comment IDs.
+
+run script -> compare gathered submissions to list of IDs.  any that don't exist yet, add to the database.
+
+compare recursive list of gathered comments to existing in DB.  any that don't exist, append to comments 
+field, using submission to put it in the right spot.
+
+Below structures will store all submission IDs in a list.
+Below structure will store all comment IDs in a dict with their submission as the key for identification.
+"""
 
 from wrapper import connectReddit
 
