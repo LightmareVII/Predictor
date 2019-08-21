@@ -17,6 +17,8 @@ Below structure will store all comment IDs in a dict with their submission as th
 """
 
 from wrapper import connectReddit
+import csv
+
 
 wrapper = connectReddit()
 
@@ -25,19 +27,16 @@ posts = []
 comments = {}
 
 for sub in subReddit:
-    data = wrapper.getSub(sub, 5)
+    data = wrapper.getSub(sub, 20)
     
     #do stuff with data
     for postkey in data.keys():
         posts.append(postkey)
         comments[postkey] = []
+        print(postkey,',', len(data[postkey]['comments']))
         
         for commentkey in data[postkey]['comments'].keys():
             comments[postkey].append(commentkey)
-        
-        
-        
-        
 """       
 newlist = [data[x]['title'] for x in data.keys()] - newlist with all titles from data
 
@@ -48,3 +47,44 @@ for x in data.keys():
     newlist.append(data[x]['title'])
 
 """
+
+with open('D:\Python Projects\Predictor\TestData.csv',
+           mode='w',
+           encoding = 'utf-8') as csv_file:
+    
+    fields = ['id',
+              'title',
+              'selftext',
+              'subreddit',
+              'created',
+              'is_video',
+              'url',
+              'authorID',
+              'author',
+              'votes',
+              'vote_ratio',
+              'num_comments',
+              'media',
+              'stickied',
+              'subscribers',
+              'num_crossposts',
+              'pinned',
+              'awards',
+              'score',
+              'comments']
+    
+    csv_writer = csv.DictWriter(csv_file,
+                                fieldnames = fields,
+                                lineterminator = '\n')
+    csv_writer.writeheader()
+    #csv_writer.writerow((k, v.encode('utf-8')) for k, v in data.items())
+    
+    #csv_writer.writerows(data)
+    for x in data:
+        csv_writer.writerow(data[x])
+    
+    csv_file.close()
+    
+    
+    
+    

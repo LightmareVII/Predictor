@@ -4,6 +4,7 @@ wrappers to make connections to various APIs
 #add initial database check
 import praw
 from praw.models import MoreComments
+import time
 
 class connectReddit():
     def __init__(self):
@@ -30,6 +31,7 @@ class connectReddit():
         return(self.RETURN_COMMENTS)
         
     def getSub(self, SUBREDDIT, POST_LIMIT):
+        start = time.time()
         self.RESPONSE = {}
         
         for POST in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT):
@@ -52,10 +54,10 @@ class connectReddit():
                                       'pinned' : POST.pinned,
                                       'awards' : POST.total_awards_received,
                                       'score' : POST.score,
-                                      'comments' : self.getComments(POST)}
+                                      'comments' : dict(self.getComments(POST))}
             
         #(self.responseList.append(x) for x in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT))
-            self.post = POST
+        print('%s seconds elapsed' % (time.time() - start))
         return(self.RESPONSE)
 
 class connectTwitter(object):
