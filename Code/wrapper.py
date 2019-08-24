@@ -6,6 +6,8 @@ import praw
 from praw.models import MoreComments
 import time
 
+#may have gone a little self happy - discovered it in my last project and it helped me immensely
+
 class connectReddit():
     def __init__(self):
         self.CLIENT_ID = '_x2PTISsyViP3g'
@@ -14,27 +16,30 @@ class connectReddit():
         self.REDDIT = praw.Reddit(client_id = self.CLIENT_ID,
                                   client_secret = self.CLIENT_SECRET,
                                   user_agent = self.USER_AGENT)
+        self.index = 1
     def getComments(self, POST):
-        self.RETURN_COMMENTS = {}
+        RETURN_COMMENTS = {}
         
         self.SUBMISSION = self.REDDIT.submission(id = POST)
         for COMMENT in self.SUBMISSION.comments.list():
             if isinstance(COMMENT, MoreComments):
                 continue
             else:
-                self.RETURN_COMMENTS[COMMENT.id] = {'id' : COMMENT.id,
-                                                    'body' : COMMENT.body,
-                                                    'author' : COMMENT.author,
-                                                    'votes' : COMMENT.ups - COMMENT.downs,
-                                                    'created' : COMMENT.created_utc,
-                                                    'parent': COMMENT.parent_id.split('_')[-1]}
-        return(self.RETURN_COMMENTS)
+                RETURN_COMMENTS[COMMENT.id] = {'id' : COMMENT.id,
+                                               'body' : COMMENT.body,
+                                               'author' : COMMENT.author,
+                                               'votes' : COMMENT.ups - COMMENT.downs,
+                                               'created' : COMMENT.created_utc,
+                                               'parent': COMMENT.parent_id.split('_')[-1]}
+        return(RETURN_COMMENTS)
         
     def getSub(self, SUBREDDIT, POST_LIMIT):
         start = time.time()
         self.RESPONSE = {}
         
         for POST in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT):
+            print(self.index)
+            self.index += 1
             self.RESPONSE[POST.id] = {'id': POST.id,
                                       'title' : POST.title,
                                       'selftext': POST.selftext,
@@ -72,4 +77,4 @@ class connectMarkets(object):       #one per market
     def __init__():
         pass
 
-test = connectReddit()
+#test = connectReddit()

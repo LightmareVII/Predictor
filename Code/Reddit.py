@@ -22,21 +22,23 @@ import csv
 
 wrapper = connectReddit()
 
-subReddit = ['finance']
+subReddit = ['all']
 posts = []
 comments = {}
 
 for sub in subReddit:
-    data = wrapper.getSub(sub, 20)
+    data = wrapper.getSub(sub, None)
     
     #do stuff with data
     for postkey in data.keys():
-        posts.append(postkey)
+        posts.append(postkey) #list of all submissions by id only
         comments[postkey] = []
         print(postkey,',', len(data[postkey]['comments']))
         
         for commentkey in data[postkey]['comments'].keys():
-            comments[postkey].append(commentkey)
+            comments[postkey].append(commentkey) #list of all comments by comment key only
+                                                 #should also save parent key.  Idk if submission can be recorded.  that would be ideal
+                                                 #also not sure if you plan on trying to follow conversations to gather info or take each one as a single data point
 """       
 newlist = [data[x]['title'] for x in data.keys()] - newlist with all titles from data
 
@@ -77,14 +79,10 @@ with open('D:\Python Projects\Predictor\TestData.csv',
                                 fieldnames = fields,
                                 lineterminator = '\n')
     csv_writer.writeheader()
-    #csv_writer.writerow((k, v.encode('utf-8')) for k, v in data.items())
+    #csv_writer.writerow((k, v.encode('utf-8')) for k, v in data.items()) #this didn't work any better
     
-    #csv_writer.writerows(data)
     for x in data:
-        csv_writer.writerow(data[x])
+        csv_writer.writerow(data[x]) #submisisons with over 100 comments tended to line break and start a new record mid-export
     
     csv_file.close()
-    
-    
-    
     
