@@ -17,6 +17,8 @@ class connectReddit():
                                   client_secret = self.CLIENT_SECRET,
                                   user_agent = self.USER_AGENT)
         self.index = 1
+        
+    
     def getComments(self, POST):
         RETURN_COMMENTS = {}
         
@@ -32,38 +34,59 @@ class connectReddit():
                                                'created' : COMMENT.created_utc,
                                                'parent': COMMENT.parent_id.split('_')[-1]}
         return(RETURN_COMMENTS)
-        
+    
+    
+    def combSub(self, POST, SORT):
+        submissions = {}
+        comments = {}
+        for submission in POST:
+            submissions[submission.id] = {'id': submission.id,
+                                      'title' : submission.title,
+                                      'selftext': submission.selftext,
+                                      'subreddit': submission.subreddit_name_prefixed,
+                                      'created' : submission.created_utc,
+                                      'is_video' : submission.is_video,
+                                      'url' : submission.url,
+                                      'author': submission.author,
+                                      'votes': submission.ups - submission.downs,
+                                      'vote_ratio' : submission.upvote_ratio,
+                                      'num_comments': submission.num_comments,
+                                      'media' : submission.media,
+                                      'stickied' : submission.stickied,
+                                      'subscribers' : submission.subreddit_subscribers,
+                                      'num_crossposts' : submission.num_crossposts,
+                                      'pinned' : submission.pinned,
+                                      'awards' : submission.total_awards_received,
+                                      'score' : submission.score,
+                                      'sorted_by': SORT}
+            
+            comments[submission.id] = self.getComments(submission)
+            
+            return(submissions, comments)
+            
+            
     def getSub(self, SUBREDDIT, POST_LIMIT):
         start = time.time()
-        self.RESPONSE = {}
+        RESPONSE_SUB = {}
+        RESPONSE_COMMENT = {}
         
-        for POST in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT):
-            print(self.index)
-            self.index += 1
-            self.RESPONSE[POST.id] = {'id': POST.id,
-                                      'title' : POST.title,
-                                      'selftext': POST.selftext,
-                                      'subreddit': POST.subreddit_name_prefixed,
-                                      'created' : POST.created_utc,
-                                      'is_video' : POST.is_video,
-                                      'url' : POST.url,
-                                      'authorID': POST.author_fullname,
-                                      'author': POST.author,
-                                      'votes': POST.ups - POST.downs,
-                                      'vote_ratio' : POST.upvote_ratio,
-                                      'num_comments': POST.num_comments,
-                                      'media' : POST.media,
-                                      'stickied' : POST.stickied,
-                                      'subscribers' : POST.subreddit_subscribers,
-                                      'num_crossposts' : POST.num_crossposts,
-                                      'pinned' : POST.pinned,
-                                      'awards' : POST.total_awards_received,
-                                      'score' : POST.score,
-                                      'comments' : dict(self.getComments(POST))}
+        sortList = ['hot','new','controversial','top','rising']
+        
+        POST_LIST = [self.REDDIT.subreddit(SUBREDDIT).hot(limit = POST_LIMIT),
+                     self.REDDIT.subreddit(SUBREDDIT).new(limit = POST_LIMIT),
+                     self.REDDIT.subreddit(SUBREDDIT).controversial(limit = POST_LIMIT),
+                     self.REDDIT.subreddit(SUBREDDIT).top(limit = POST_LIMIT),
+                     self.REDDIT.subreddit(SUBREDDIT).rising(limit = POST_LIMIT)]
+        sortIndex = 0
+        for sortItem in POST_LIST:
+            print(sortList[sortIndex])
+            sortedSubs, sortedComments = self.combSub(sortItem, sortList[sortIndex])
+            RESPONSE_SUB.update(sortedSubs)
+            RESPONSE_COMMENT.update(sortedComments)
+            sortIndex += 1
             
-        #(self.responseList.append(x) for x in self.REDDIT.subreddit(SUBREDDIT).hot(limit=POST_LIMIT))
         print('%s seconds elapsed' % (time.time() - start))
-        return(self.RESPONSE)
+        return(RESPONSE_SUB, RESPONSE_COMMENT)
 
 class connectTwitter(object):
     def __init__():
@@ -77,4 +100,4 @@ class connectMarkets(object):       #one per market
     def __init__():
         pass
 
-#test = connectReddit()
+test = connectReddit()
