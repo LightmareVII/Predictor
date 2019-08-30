@@ -22,8 +22,8 @@ class connectReddit():
     def getComments(self, POST):
         RETURN_COMMENTS = {}
         
-        self.SUBMISSION = self.REDDIT.submission(id = POST)
-        for COMMENT in self.SUBMISSION.comments.list():
+        SUBMISSION = self.REDDIT.submission(id = POST)
+        for COMMENT in SUBMISSION.comments.list():
             if isinstance(COMMENT, MoreComments):
                 continue
             else:
@@ -41,31 +41,32 @@ class connectReddit():
         comments = {}
         for submission in POST:
             submissions[submission.id] = {'id': submission.id,
-                                      'title' : submission.title,
-                                      'selftext': submission.selftext,
-                                      'subreddit': submission.subreddit_name_prefixed,
-                                      'created' : submission.created_utc,
-                                      'is_video' : submission.is_video,
-                                      'url' : submission.url,
-                                      'author': submission.author,
-                                      'votes': submission.ups - submission.downs,
-                                      'vote_ratio' : submission.upvote_ratio,
-                                      'num_comments': submission.num_comments,
-                                      'media' : submission.media,
-                                      'stickied' : submission.stickied,
-                                      'subscribers' : submission.subreddit_subscribers,
-                                      'num_crossposts' : submission.num_crossposts,
-                                      'pinned' : submission.pinned,
-                                      'awards' : submission.total_awards_received,
-                                      'score' : submission.score,
-                                      'sorted_by': SORT}
+                                          'title' : submission.title,
+                                          'selftext': submission.selftext,
+                                          'subreddit': submission.subreddit_name_prefixed,
+                                          'created' : submission.created_utc,
+                                          'is_video' : submission.is_video,
+                                          'url' : submission.url,
+                                          'author': submission.author,
+                                          'votes': submission.ups - submission.downs,
+                                          'vote_ratio' : submission.upvote_ratio,
+                                          'num_comments': submission.num_comments,
+                                          'media' : submission.media,
+                                          'stickied' : submission.stickied,
+                                          'subscribers' : submission.subreddit_subscribers,
+                                          'num_crossposts' : submission.num_crossposts,
+                                          'pinned' : submission.pinned,
+                                          'awards' : submission.total_awards_received,
+                                          'score' : submission.score,
+                                          'sorted_by': SORT}
             
             comments[submission.id] = self.getComments(submission)
-            
-            return(submissions, comments)
+        return(submissions, comments)
             
             
     def getSub(self, SUBREDDIT, POST_LIMIT):
+        print('{:^25}'.format(SUBREDDIT))
+        print('{:^25}'.format(POST_LIMIT))
         start = time.time()
         RESPONSE_SUB = {}
         RESPONSE_COMMENT = {}
@@ -79,14 +80,21 @@ class connectReddit():
                      self.REDDIT.subreddit(SUBREDDIT).rising(limit = POST_LIMIT)]
         sortIndex = 0
         for sortItem in POST_LIST:
-            print(sortList[sortIndex])
+            print('{:<25}'.format(sortList[sortIndex]))
             sortedSubs, sortedComments = self.combSub(sortItem, sortList[sortIndex])
             RESPONSE_SUB.update(sortedSubs)
             RESPONSE_COMMENT.update(sortedComments)
             sortIndex += 1
             
-        print('%s seconds elapsed' % (time.time() - start))
+        print('{:>30}'.format('%s seconds elapsed' % round((time.time() - start), 2)))
         return(RESPONSE_SUB, RESPONSE_COMMENT)
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                               NOT YET IMPEMENTED                            #
+#                                                                             #
+#                                                                             #
+###############################################################################
 
 class connectTwitter(object):
     def __init__():

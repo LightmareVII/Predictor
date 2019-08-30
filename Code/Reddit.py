@@ -27,7 +27,7 @@ def runThis():
 
     subReddit = ['Finance', 'Investing', 'worldnews', 'politics']
     for sub in subReddit:
-        dataSUBS, dataCOMMENTS = wrapper.getSub(sub, 1)
+        dataSUBS, dataCOMMENTS = wrapper.getSub(sub, None)
         fields1 = ['id',
                    'title',
                    'selftext',
