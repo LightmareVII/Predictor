@@ -10,8 +10,8 @@ import time
 
 class connectReddit():
     def __init__(self):
-        self.CLIENT_ID = '_x2PTISsyViP3g'
-        self.CLIENT_SECRET = 'syZ1LiodSb9RGXSGmZ7djaL8Apk'
+        self.CLIENT_ID = ''
+        self.CLIENT_SECRET = ''
         self.USER_AGENT = 'LanPredictor-BETA by /u/LanPredictor'
         self.REDDIT = praw.Reddit(client_id = self.CLIENT_ID,
                                   client_secret = self.CLIENT_SECRET,
